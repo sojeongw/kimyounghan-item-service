@@ -44,6 +44,11 @@ public class BasicItemController {
         return "basic/item";
     }
 
+    @GetMapping("/add")
+    public String addForm() {
+        return "basic/addForm";
+    }
+
     // 테스트용 데이터 추가
     @PostConstruct
     public void init() {

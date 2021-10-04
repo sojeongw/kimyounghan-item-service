@@ -5,9 +5,7 @@ import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -47,6 +45,54 @@ public class BasicItemController {
     @GetMapping("/add")
     public String addForm() {
         return "basic/addForm";
+    }
+
+    //    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName, @RequestParam int price, @RequestParam Integer quantity, Model model) {
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+
+        itemRepository.save(item);
+
+        // 새로 저장한 아이템에 대한 새 페이지를 만드는 대신, 템플릿에 값을 넘긴다.
+        model.addAttribute(item);
+        return "basic/item";
+    }
+
+    //    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item, Model model) {
+        /*
+        modelAttribute가 item을 V1이랑 똑같이 만들어준다.
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+        */
+
+        itemRepository.save(item);
+
+        /*
+        @ModelAttribute("item")에 지정한 item 이란 이름으로 뷰에도 담아준다.
+        모델에 들어가는 값이 일치하지 않으면 안된다.
+        예를 들어 템플릿에 item이라고 되어있는데 @ModelAttribute("item2")라고 하면 실패한다.
+        model.addAttribute(item);
+        */
+
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV4(Item item) {
+        itemRepository.save(item);
+        return "basic/item";
     }
 
     // 테스트용 데이터 추가
